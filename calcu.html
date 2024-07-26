@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinawin Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://wallpapercave.com/wp/wp6704889.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .calculator {
+            background-color: rgba(255, 255, 255, 0.452);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 300px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #9B86BD;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+    <script>
+        function addInput() {
+            var inputs = document.querySelectorAll(".input-number");
+            if (inputs.length >= 10) {
+                alert("You can only enter up to 10 numbers.");
+                return;
+            }
+            var container = document.getElementById("input-container");
+            var input = document.createElement("input");
+            input.type = "text";
+            input.className = "input-number";
+            input.placeholder = "Number " + (inputs.length + 1);
+            container.appendChild(input);
+        }
+
+        function calculate() {
+            var inputs = document.querySelectorAll(".input-number");
+            var numbersArray = [];
+            inputs.forEach(function(input) {
+                if (input.value.trim() !== "") {
+                    numbersArray.push(Number(input.value.trim()));
+                }
+            });
+            if (numbersArray.length === 0) {
+                alert("Please enter at least one number.");
+                return;
+            }
+            var mean = calculateMean(numbersArray);
+            var median = calculateMedian(numbersArray);
+            var mode = calculateMode(numbersArray);
+            var stdDev = calculateStandardDeviation(numbersArray);
+
+            document.getElementById("mean").innerText = "Mean: " + mean.toFixed(2);
+            document.getElementById("median").innerText = "Median: " + median.toFixed(2);
+            document.getElementById("mode").innerText = "Mode: " + mode;
+            document.getElementById("stdDev").innerText = "Standard Deviation: " + stdDev.toFixed(2);
+        }
+
+        function calculateMean(data) {
+            var sum = data.reduce(function (a, b) { return a + b; }, 0);
+            return sum / data.length;
+        }
+
+        function calculateMedian(data) {
+            var sortedData = data.slice().sort(function (a, b) { return a - b; });
+            var mid = Math.floor(sortedData.length / 2);
+            if (sortedData.length % 2 === 0) {
+                return (sortedData[mid - 1] + sortedData[mid]) / 2;
+            } else {
+                return sortedData[mid];
+            }
+        }
+
+        function calculateMode(data) {
+            var modeMap = {};
+            var maxCount = 0;
+            var modes = [];
+
+            data.forEach(function (num) {
+                if (modeMap[num] == null) {
+                    modeMap[num] = 1;
+                } else {
+                    modeMap[num]++;
+                }
+
+                if (modeMap[num] > maxCount) {
+                    maxCount = modeMap[num];
+                    modes = [num];
+                } else if (modeMap[num] === maxCount) {
+                    modes.push(num);
+                }
+            });
+
+            return modes.join(", ");
+        }
+
+        function calculateStandardDeviation(data) {
+            var mean = calculateMean(data);
+            var squaredDiffs = data.map(function (value) {
+                var diff = value - mean;
+                return diff * diff;
+            });
+            var variance = calculateMean(squaredDiffs);
+            return Math.sqrt(variance);
+        }
+    </script>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Tinawin Calculator</h1>
+        <div id="input-container">
+            <input type="text" class="input-number" placeholder="Number 1">
+        </div>
+        <button onclick="addInput()">Add Number</button>
+        <button onclick="calculate()">Calculate</button>
+        <div class="result">
+            <div id="mean"></div>
+            <div id="median"></div>
+            <div id="mode"></div>
+            <div id="stdDev"></div>
+        </div>
+    </div>
+</body>
+</html>
